@@ -13,7 +13,8 @@ timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: https://mlx.github.io/project
+url: https://github.com/mlx92/blog
+root: /blog
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -101,10 +102,16 @@ theme: fluid
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
-deploy:
-  type: git
-  repo: https://github.com/mlx92/github.io
-  branch: gh-pages
-  message: init
+# deploy:
+#   type: git
+#   repo: https://github.com/mlx92/blog
+#   branch: gh-pages
+#   message: init
 
 banner_img: /img/bg/home.jpg   # 对应存放在 /source/img/bg/example.jpg
+
+deploy:
+  type: git
+  repo: https://github.com/mlx92/blog
+  branch: gh-pages
+  message: init
