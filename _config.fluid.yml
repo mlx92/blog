@@ -578,3 +578,19 @@ links:
     # The specified plugin needs to set the necessary parameters at the same time
     # Options: utterances | disqus | gitalk | valine | waline | changyan | livere | remark42 | twikoo | cusdis | giscus | discuss
     type: disqus
+
+
+code:
+  copy_btn: true
+  line_number: false
+  highlight:
+    enable: true
+    line_number: false
+    lib: "highlightjs"
+    highlightjs:
+      style: 'Github Gist'
+      bg_color: false
+    prismjs:
+      style: "default"
+      preprocess: false
+      line_number: false
