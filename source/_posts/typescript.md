@@ -947,7 +947,7 @@ class FileSystemObject {
 }
 ```
 
-## TypeScript 泛型
+## 泛型
 
 ### 1.简介
 
@@ -1249,4 +1249,341 @@ type OneOrManyOrNull<Type> = OrNull<OneOrMany<Type>>;
 ```
 
 上面示例中，最后一行的泛型`OrNull`的类型参数，就是另一个泛型`OneOrMany`。
+
+## 类型断言
+
+### 1. 类型断言有两种语法。
+
+```tsx
+// 语法一：<类型>值
+<Type>value
+
+// 语法二：值 as 类型
+value as Type
+```
+
+上面两种语法是等价的，`value`表示值，`Type`表示类型。早期只有语法一，后来因为 TypeScript 开始支持 React 的 JSX 语法（尖括号表示 HTML 元素），为了避免两者冲突，就引入了语法二。目前，推荐使用语法二。
+
+```tsx
+// 语法一
+let bar:T = <T>foo;
+
+// 语法二
+let bar:T = foo as T;
+```
+
+上面示例是两种类型断言的语法，其中的语法一因为跟 JSX 语法冲突，使用时必须关闭 TypeScript 的 React 支持，否则会无法识别。由于这个原因，现在一般都使用语法二。
+
+### 2.类型断言的条件
+
+```tsx
+const n = 1;
+const m:string = n as string; // 报错
+```
+
+类型断言要求实际的类型与断言的类型兼容，实际类型可以断言为一个更加宽泛的类型（父类型），也可以断言为一个更加精确的类型（子类型），但不能断言为一个完全无关的类型。
+
+但是，如果真的要断言成一个完全无关的类型，也是可以做到的。
+
+```tsx
+// 或者写成 <T><unknown>expr
+expr as unknown as T
+```
+
+上面代码中，`expr`连续进行了两次类型断言，第一次断言为`unknown`类型，第二次断言为`T`类型。这样的话，`expr`就可以断言成任意类型`T`，而不报错。
+
+下面是本小节开头那个例子的改写。
+
+```tsx
+const n = 1;
+const m:string = n as unknown as string; // 正确
+```
+
+### 3. as const 断言
+
+如果没有声明变量类型，let 命令声明的变量，会被类型推断为 TypeScript 内置的基本类型之一；const 命令声明的变量，则被推断为值类型常量。
+
+```tsx
+// 类型推断为基本类型 string
+let s1 = 'JavaScript';
+
+// 类型推断为字符串 “JavaScript”
+const s2 = 'JavaScript';
+```
+
+上面示例中，变量`s1`的类型被推断为`string`，变量`s2`的类型推断为值类型`JavaScript`。后者是前者的子类型，相当于 const 命令有更强的限定作用，可以缩小变量的类型范围。
+
+有些时候，let 变量会出现一些意想不到的报错，变更成 const 变量就能消除报错。
+
+```tsx
+let s = 'JavaScript';
+
+type Lang =
+  |'JavaScript'
+  |'TypeScript'
+  |'Python';
+
+function setLang(language:Lang) {
+  /* ... */
+}
+
+setLang(s); // 报错
+```
+
+上面示例中，最后一行报错，原因是函数`setLang()`的参数`language`类型是`Lang`，这是一个联合类型。但是，传入的字符串`s`的类型被推断为`string`，属于`Lang`的父类型。父类型不能替代子类型，导致报错。
+
+一种解决方法就是把 let 命令改成 const 命令。
+
+```tsx
+const s = 'JavaScript';
+```
+
+这样的话，变量`s`的类型就是值类型`JavaScript`，它是联合类型`Lang`的子类型，传入函数`setLang()`就不会报错。
+
+另一种解决方法是使用类型断言。TypeScript 提供了一种特殊的类型断言`as const`，用于告诉编译器，推断类型时，可以将这个值推断为常量，即把 let 变量断言为 const 变量，从而把内置的基本类型变更为值类型。
+
+```tsx
+let s = 'JavaScript' as const;
+setLang(s);  // 正确
+```
+
+上面示例中，变量`s`虽然是用 let 命令声明的，但是使用了`as const`断言以后，就等同于是用 const 命令声明的，变量`s`的类型会被推断为值类型`JavaScript`。
+
+使用了`as const`断言以后，let 变量就不能再改变值了。
+
+```tsx
+let s = 'JavaScript' as const;
+s = 'Python'; // 报错
+```
+
+上面示例中，let 命令声明的变量`s`，使用`as const`断言以后，就不能改变值了，否则报错。
+
+注意，`as const`断言只能用于字面量，不能用于变量。
+
+```tsx
+let s = 'JavaScript';
+setLang(s as const); // 报错
+```
+
+上面示例中，`as const`断言用于变量`s`，就报错了。下面的写法可以更清晰地看出这一点。
+
+```tsx
+let s1 = 'JavaScript';
+let s2 = s1 as const; // 报错
+```
+
+另外，`as const`也不能用于表达式。
+
+```tsx
+let s = ('Java' + 'Script') as const; // 报错
+```
+
+上面示例中，`as const`用于表达式，导致报错。
+
+`as const`也可以写成前置的形式。
+
+```tsx
+// 后置形式
+expr as const
+
+// 前置形式
+<const>expr
+```
+
+`as const`断言可以用于整个对象，也可以用于对象的单个属性，这时它的类型缩小效果是不一样的。
+
+```tsx
+const v1 = {
+  x: 1,
+  y: 2,
+}; // 类型是 { x: number; y: number; }
+
+const v2 = {
+  x: 1 as const,
+  y: 2,
+}; // 类型是 { x: 1; y: number; }
+
+const v3 = {
+  x: 1,
+  y: 2,
+} as const; // 类型是 { readonly x: 1; readonly y: 2; }
+```
+
+上面示例中，第二种写法是对属性`x`缩小类型，第三种写法是对整个对象缩小类型。
+
+总之，`as const`会将字面量的类型断言为不可变类型，缩小成 TypeScript 允许的最小类型。
+
+下面是数组的例子。
+
+```tsx
+// a1 的类型推断为 number[]
+const a1 = [1, 2, 3];
+
+// a2 的类型推断为 readonly [1, 2, 3]
+const a2 = [1, 2, 3] as const;
+```
+
+上面示例中，数组字面量使用`as const`断言后，类型推断就变成了只读元组。
+
+由于`as const`会将数组变成只读元组，所以很适合用于函数的 rest 参数。
+
+```tsx
+function add(x:number, y:number) {
+  return x + y;
+}
+
+const nums = [1, 2];
+const total = add(...nums); // 报错
+```
+
+上面示例中，变量`nums`的类型推断为`number[]`，导致使用扩展运算符`...`传入函数`add()`会报错，因为`add()`只能接受两个参数，而`...nums`并不能保证参数的个数。
+
+事实上，对于固定参数个数的函数，如果传入的参数包含扩展运算符，那么扩展运算符只能用于元组。只有当函数定义使用了 rest 参数，扩展运算符才能用于数组。
+
+解决方法就是使用`as const`断言，将数组变成元组。
+
+```tsx
+const nums = [1, 2] as const;
+const total = add(...nums); // 正确
+```
+
+上面示例中，使用`as const`断言后，变量`nums`的类型会被推断为`readonly [1, 2]`，使用扩展运算符展开后，正好符合函数`add()`的参数类型。
+
+Enum 成员也可以使用`as const`断言。
+
+```tsx
+enum Foo {
+  X,
+  Y,
+}
+let e1 = Foo.X;            // Foo
+let e2 = Foo.X as const;   // Foo.X
+```
+
+上面示例中，如果不使用`as const`断言，变量`e1`的类型被推断为整个 Enum 类型；使用了`as const`断言以后，变量`e2`的类型被推断为 Enum 的某个成员，这意味着它不能变更为其他成员。 
+
+### 4.非空断言
+空断言只有在打开编译选项`strictNullChecks`时才有意义。如果不打开这个选项，编译器就不会检查某个变量是否可能为`undefined`或`null`。
+
+？可选 ！必须。 如果！强制解包错误会报错。
+
+## 模块
+
+### 1. 简介
+
+任何包含 import 或 export 语句的文件，就是一个模块（module）。相应地，如果文件不包含 export 语句，就是一个全局的脚本文件。
+
+模块本身就是一个作用域，不属于全局作用域。模块内部的变量、函数、类只在内部可见，对于模块外部是不可见的。暴露给外部的接口，必须用 export 命令声明；如果其他文件要使用模块的接口，必须用 import 命令来输入。
+
+如果一个文件不包含 export 语句，但是希望把它当作一个模块（即内部变量对外不可见），可以在脚本头部添加一行语句。
+
+```tsx
+export {};
+```
+
+上面这行语句不产生任何实际作用，但会让当前文件被当作模块处理，所有它的代码都变成了内部代码。
+
+### 2. import type 语句
+
+import 在一条语句中，可以同时输入类型和正常接口。
+
+```tsx
+// a.ts
+export interface A {
+  foo: string;
+}
+
+export let a = 123;
+
+// b.ts
+import { A, a } from './a';
+```
+
+上面示例中，文件`a.ts`的 export 语句输出了一个类型`A`和一个正常接口`a`，另一个文件`b.ts`则在同一条语句中输入了类型和正常接口。
+
+这样很不利于区分类型和正常接口，容易造成混淆。为了解决这个问题，TypeScript 引入了两个解决方法。
+
+第一个方法是在 import 语句输入的类型前面加上`type`关键字。
+
+```tsx
+import { type A, a } from './a';
+```
+
+上面示例中，import 语句输入的类型`A`前面有`type`关键字，表示这是一个类型。
+
+第二个方法是使用 import type 语句，这个语句只能输入类型，不能输入正常接口。
+
+```tsx
+// 正确
+import type { A } from './a';
+
+// 报错
+import type { a } from './a';
+```
+
+import type 语句也可以输入默认类型。
+
+```tsx
+import type DefaultType from 'moduleA';
+```
+
+import type 在一个名称空间下，输入所有类型的写法如下。
+
+```tsx
+import type * as TypeNS from 'moduleA';
+```
+
+同样的，export 语句也有两种方法，表示输出的是类型。
+
+```tsx
+type A = 'a';
+type B = 'b';
+
+// 方法一
+export {type A, type B};
+
+// 方法二
+export type {A, B};
+```
+
+上面示例中，方法一是使用`type`关键字作为前缀，表示输出的是类型；方法二是使用 export type 语句，表示整行输出的都是类型。
+
+下面是 export type 将一个类作为类型输出的例子。
+
+```tsx
+class Point {
+  x: number;
+  y: number;
+}
+
+export type { Point };
+```
+
+上面示例中，由于使用了 export type 语句，输出的并不是 Point 这个类，而是 Point 代表的实例类型。输入时，只能作为类型输入。
+
+```tsx
+import type { Point } from './module';
+
+const p:Point = { x: 0, y: 0 };
+```
+
+上面示例中，`Point`只能作为类型输入，不能当作正常接口使用。
+
+### 3. 模块定位
+
+模块定位（module resolution）指的是一种算法，用来确定 import 语句和 export 语句里面的模块文件位置。
+
+```tsx
+// 相对模块
+import { TypeA } from './a';
+
+// 非相对模块
+import * as $ from "jquery";
+```
+
+上面示例中，TypeScript 怎么确定`./a`或`jquery`到底是指哪一个模块，具体位置在哪里，用到的算法就叫做“模块定位”。
+
+编译参数`moduleResolution`，用来指定具体使用哪一种定位算法。常用的算法有两种：`Classic`和`Node`。
+
+如果没有指定`moduleResolution`，它的默认值与编译参数`module`有关。`module`设为`commonjs`时（项目脚本采用 CommonJS 模块格式），`moduleResolution`的默认值为`Node`，即采用 Node.js 的模块定位算法。其他情况下（`module`设为 es2015、 esnext、amd, system, umd 等等），就采用`Classic`定位算法。
 
