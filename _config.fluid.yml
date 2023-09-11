@@ -471,7 +471,7 @@ category:
 #---------------------------
 tag:
   enable: true
-  banner_img: /img/bg/tag.jpg
+  banner_img: /img/bg/tag.webp
   banner_img_height: 80
   banner_mask_alpha: 0.3
   tagcloud:
