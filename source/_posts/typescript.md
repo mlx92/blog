@@ -3,9 +3,12 @@ title: TypeScript 学习
 tags: [TS]
 categories: [前端]
 index_img: /img/web/tslogo.png
-banner_img: /img/bg/about.jpg
+banner_img: /img/bg/home.webp
 date: 2023-09-09 20:29:00
 excerpt: TS 语法
+hide: false # 
+sticky: 1 # 排序值
+comment: true
 ---
 
 记录一些学习的 TS 语法。学习内容来自 [阮一峰](https://wangdoc.com/typescript/)
@@ -1587,3 +1590,5 @@ import * as $ from "jquery";
 
 如果没有指定`moduleResolution`，它的默认值与编译参数`module`有关。`module`设为`commonjs`时（项目脚本采用 CommonJS 模块格式），`moduleResolution`的默认值为`Node`，即采用 Node.js 的模块定位算法。其他情况下（`module`设为 es2015、 esnext、amd, system, umd 等等），就采用`Classic`定位算法。
 
+## 参考
+[^1]: [阮一峰](https://wangdoc.com/typescript/)
