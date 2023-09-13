@@ -2,7 +2,6 @@
 title: TypeScript 学习
 tags: [TS]
 categories: [前端]
-index_img: /img/web/tslogo.png
 banner_img: /img/bg/home.webp
 date: 2023-09-09 20:29:00
 excerpt: TS 语法
