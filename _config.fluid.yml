@@ -547,7 +547,13 @@ links:
       title: "Randy",
       intro: "推荐看的",
       link: "https://lutaonan.com/",
-      avatar: "	https://lutaonan.com/_astro/avatar.3832092f.jpg"
+      avatar: "https://lutaonan.com/_astro/avatar.3832092f.jpg"
+    }
+    - {
+      title: "Joseph_L",
+      intro: "安卓",
+      link: "http://joeljt.top/",
+      avatar: "http://joeljt.top/img/portrait.jpeg"
     }
    
 
