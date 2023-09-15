@@ -109,21 +109,18 @@ You earned 47 credits
 
 评价:
 
-代码组织不甚清晰!  当我们需要修改系统时，就涉及了人。**差劲的系统是很难修改的**
+代码组织不甚清晰!  
 
-可拓展性不高！当计费规则发生改变，积分规则计算出现变化，输出结果改变格式时 都需要读懂全部逻辑 并且修改原 statement 函数。作为 一个经验丰富的开发者，我可以肯定:**不论最终提出什么方案，他们一定会在6 个月之内再次修改它**。
-
-结语：
-
-是需求的变化使重构变得必要。如果一段代码能正常工作，并且不会再被修改，那么完全可以不去重构它。能改进之当然很好，但若没人需要去理解它，它就不会真正妨碍什么。
-如果确实有人需要理解它的工作原理，并且觉得理解起来很费劲，那你就需要改进一下代码了。
+可拓展性不高！
 
 ## 2 重构第一步 - 测试驱动开发
 
 > 重构前，先检查自己是否有一套可靠的测试集。这些测试必须有自我检验能力。
 
-**进行重构时，我需要依赖测试**。我将测试视为bug检测器，它们能保护我不被自己犯的错误所困扰。把我想要达成的目标写两遍——代码里写一遍，测试里 再写一遍——我就得犯两遍同样的错误才能骗过检测器。
-这降低了我犯错的概率，因为我对工作进行了二次确认。尽管编写测试需要花费时间，但却为我节省 下可观的调试时间。
+**进行重构时，需要依赖测试**。
+测试可以看做 bug 检测器，它们能保护不被自己犯的错误所困扰。
+把想要达成的目标写两遍——代码里写一遍，测试里 再写一遍、这样犯两遍同样的错误才能骗过检测器。
+这大大降低了错误率，因为对工作进行了二次确认。尽管编写测试需要花费时间，但却为节省下可观的调试时间。
 
 ## 3 分解 statement 函数
 
@@ -133,7 +130,7 @@ You earned 47 credits
 
 ### 3.1 抽离函数
 
-最让人难懂的逻辑就是 switch 中计算金额的逻辑。我们要将他抽离出去，
+最让人难懂的逻辑就是 switch 中计算金额的逻辑。要将他抽离出去，
 
 如何抽离呢？
 
@@ -547,7 +544,264 @@ function statement (invoice, plays) {
 
 现在代码结构已经好多了。顶层的statement函数现在只剩7行代码，而且它处理的都是与打印详单相关的逻辑。与计算相关的逻辑从主函数中被移走，改由一组函数来支持。每个单独的计算过程和详单的整体结构，都因此变得更易理解 了。
 
+## 5. 拆分计算阶段与渲染阶段---自定义数据结构 重点
 
+到目前为止，重构主要是为原函数添加足够的结构，以便我能更好地理解它，看清它的逻辑结构。
+个人觉得不需要他人讲解看清逻辑结构是无论大小工程都应该做到这一步的。
 
+接着讲重构，此时，我要修改的功能部分，为这张详单提供一个HTML版本。
 
+问题是，这些分解出来的函数嵌套在打印文本详单的函数中。无 论嵌套函数组织得多么良好，我总不想将它们全复制粘贴到另一个新函数中。
+我希望同样的计算函数可以被文本版详单和HTML版详单共用。
+
+这里我们的目标是将逻辑分成两部分：
+
+- 数据层 ----  计算详单所需的数据
+- 渲染层 ---- 渲染 成文本或HTML
+
+> 数据层创建一个中转数据结构，再把它传递给渲染层
+
+### 中转数据结构
+
+题外话: 
+ 从用户的角度看---显示在页面上的数据才是有效数据，这些数据以不同的排列组合最终显示到页面上。
+然而，由于数据类型和非空原因，历史原因，进度原因，页面改动原因，以及实际工作中的协调成本，我们不能百分百的要求返回的数据与绘制完全契合。
+
+此时我们设计的中转数据结构就显得极为重要。或者这个结构可以叫做适配结构或者防腐层。
+
+结合例子，我们最终想得到的是
+
+**statement.js**
+
+```js
+import createStatementData from './createStatementData.js';
+function statement (invoice, plays) {
+  return renderPlainText(createStatementData(invoice, plays));
+}
+function renderPlainText(data, plays) {
+  let result = `Statement for ${data.customer}\n`;
+  for (let perf of data.performances) {
+    result += ` ${perf.play.name}: ${usd(perf.amount)} (${perf.audience} seats)\n`;
+  }
+  result += `Amount owed is ${usd(data.totalAmount)}\n`;
+  result += `You earned ${data.totalVolumeCredits} credits\n`;
+  return result;
+}
+function htmlStatement (invoice, plays) {
+  return renderHtml(createStatementData(invoice, plays));
+}
+function renderHtml (data) {
+  let result = `<h1>Statement for ${data.customer}</h1>\n`;
+  result += "<table>\n";
+  result += "<tr><th>play</th><th>seats</th><th>cost</th></tr>";
+  for (let perf of data.performances) {
+    result += ` <tr><td>${perf.play.name}</td><td>${perf.audience}</td>`;
+    result += `<td>${usd(perf.amount)}</td></tr>\n`;
+  }
+  result += "</table>\n";
+  result += `<p>Amount owed is <em>${usd(data.totalAmount)}</em></p>\n`;
+  result += `<p>You earned <em>${data.totalVolumeCredits}</em> credits</p>\n`;
+  return result;
+}
+function usd(aNumber) {
+  return new Intl.NumberFormat("en-US",
+                                { style: "currency", currency: "USD",
+}
+```
+
+**createStatementData.js**
+
+```js
+export default function createStatementData(invoice, plays) {
+   const result = {};
+   result.customer = invoice.customer;
+   result.performances = invoice.performances.map(enrichPerformance);
+   result.totalAmount = totalAmount(result);
+   result.totalVolumeCredits = totalVolumeCredits(result);
+   return result;
+}
+function enrichPerformance(aPerformance) {
+	const result = Object.assign({}, aPerformance);
+	result.play = playFor(result);
+	result.amount = amountFor(result);
+	result.volumeCredits = volumeCreditsFor(result);
+	return result;
+}
+function playFor(aPerformance) {
+	return plays[aPerformance.playID]
+}
+function amountFor(aPerformance) {
+    let result = 0;
+    switch (aPerformance.play.type) {
+        case "tragedy":
+            result = 40000;
+            if (aPerformance.audience > 30) {
+                result += 1000 * (aPerformance.audience - 30);
+            }
+            break;
+        case "comedy":
+            result = 30000;
+            if (aPerformance.audience > 20) {
+                result += 10000 + 500 * (aPerformance.audience - 20);
+            }
+            result += 300 * aPerformance.audience;
+            break;
+        default:
+            throw new Error(`unknown type: ${aPerformance.play.type}`);
+    }
+    return result;
+}
+function volumeCreditsFor(aPerformance) {
+    let result = 0;
+    result += Math.max(aPerformance.audience - 30, 0);
+    if ("comedy" === aPerformance.play.type) result += Math.floor(aPerformance.audience / 5);
+    return result;
+}
+function totalAmount(data) {
+    return data.performances
+        .reduce((total, p) => total + p.amount, 0);
+}
+function totalVolumeCredits(data) {
+    return data.performances
+        .reduce((total, p) => total + p.volumeCredits, 0);
+}
+```
+
+这里我的步子迈的稍微有点大，详细的步骤可以阅读[原书](https://github.com/mlx92/read-refactor/blob/main/%E9%87%8D%E6%9E%84%E6%94%B9%E5%96%84%E6%97%A2%E6%9C%89%E4%BB%A3%E7%A0%81%E7%9A%84%E8%AE%BE%E8%AE%A1%E7%AC%AC2%E7%89%88.pdf)，我的本意是更加注意当前 `createStatementData`中的数据。不管他内部是怎么实现的，只要提供给页面渲染时能保证数据的正确就可以。
+
+## 6. 按类型重组计算过程
+
+接下来我将注意力集中到下一个特性改动:支持更多类型的戏剧，以及支持 它们各自的价格计算和观众量积分计算。对于现在的结构，我只需要在计算函数里添加分支逻辑即可。amountFor函数清楚地体现了，戏剧类型在计算分支的选 择上起着关键的作用——但这样的分支逻辑很容易随代码堆积而腐坏
+
+要为程序引入结构、显式地表达出`计算逻辑的差异是由类型代码确定`,最自然的解决办法还是使用面向对象世界里的一个经典特性——类型多态。
+
+我的设想是先建立一个继承体系，它有“喜剧”(comedy)和“悲 剧”(tragedy)两个子类，子类各自包含独立的计算逻辑。调用者通过调用一个 多态的amount函数，让语言帮你分发到不同的子类的计算过程中。volumeCredits 函数的处理也是如法炮制。
+
+### 创建计算器基类
+
+enrichPerformance函数是关键所在，因为正是它用每场演出的数据来填充中 转数据结构。目前它直接调用了计算价格和观众量积分的函数，我需要创建一个 类，通过这个类来调用这些函数。由于这个类存放了与每场演出相关数据的计算 函数，于是我把它称为演出计算器(performance calculator)
+
+```js
+function enrichPerformance(aPerformance) {
+   const calculator = new PerformanceCalculator(aPerformance);
+   const result = Object.assign({}, aPerformance);
+   result.play = playFor(result);
+   result.amount = amountFor(result);
+   result.volumeCredits = volumeCreditsFor(result);
+   return result; 
+}
+```
+
+```js
+class PerformanceCalculator {
+  constructor(aPerformance) {
+    this.performance = aPerformance;
+  }
+}
+```
+
+我们最主要的目的是将函数搬移基类中，让不同的子类去实现同一个函数从而得到不同的计算方式。但是同时也会将play字段搬移进去，这样可以把所有数据转换集中到一处地方，保证了代码的一致性和清晰度。
+
+```js
+class PerformanceCalculator {
+  constructor(aPerformance, aPlay) {
+    this.performance = aPerformance;
+    this.play = aPlay;
+  }
+  get amount() {
+     throw new Error('subclass responsibility');
+  }
+   get volumeCredits() {
+     return Math.max(this.performance.audience - 30, 0);
+	}
+}
+class TragedyCalculator extends PerformanceCalculator {
+		get amount() {
+     let result = 40000;
+     if (this.performance.audience > 30) {
+       result += 1000 * (this.performance.audience - 30);
+     }
+     return result;
+   }
+}
+class ComedyCalculator extends PerformanceCalculator {
+    get amount() {
+        let result = 30000;
+        if (this.performance.audience > 20) {
+            result += 10000 + 500 * (this.performance.audience - 20);
+        }
+        result += 300 * this.performance.audience;
+        return result;
+    }
+    get volumeCredits() {
+        return super.volumeCredits + Math.floor(this.performance.audience / 5);
+    }
+}
+```
+
+**createStatementData.js**
+
+```js
+export default function createStatementData(invoice, plays) {
+    const result = {};
+    result.customer = invoice.customer;
+    result.performances = invoice.performances.map(enrichPerformance);
+    result.totalAmount = totalAmount(result);
+    result.totalVolumeCredits = totalVolumeCredits(result);
+    return result;
+    function enrichPerformance(aPerformance) {
+        const calculator = createPerformanceCalculator(aPerformance, playFor(aPerformance));
+        const result = Object.assign({}, aPerformance);
+        result.play = calculator.play;
+        result.amount = calculator.amount;
+        result.volumeCredits = calculator.volumeCredits;
+        return result;
+    }
+    function playFor(aPerformance) {
+        return plays[aPerformance.playID]
+    }
+    function totalAmount(data) {
+        return data.performances
+            .reduce((total, p) => total + p.amount, 0);
+    }
+    function totalVolumeCredits(data) {
+        return data.performances
+            .reduce((total, p) => total + p.volumeCredits, 0);
+    }
+}
+function createPerformanceCalculator(aPerformance, aPlay) {
+    switch (aPlay.type) {
+        case "tragedy": return new TragedyCalculator(aPerformance, aPlay);
+        case "comedy": return new ComedyCalculator(aPerformance, aPlay);
+        default:
+            throw new Error(`unknown type: ${aPlay.type}`);
+    }
+}
+```
+
+## 结语
+
+这个例子示范了数种重构手法，
+
+- 提炼函数
+- 内联变量
+- 搬移函数
+- 以多态取代条件表达式
+
+三个重点的阶段分别是：
+
+- 将原函数分解成一组嵌套的函数
+- 应用拆分阶段分离计算逻辑与输出格式化逻辑
+- 为计算器引入 多态性来处理计算逻辑
+
+平添了很多结构只为达到一个目标
+
+> 任何一个人都能轻而易举地修改它。
+
+一段健康的代码是有人需要修改代码时，他们应能轻易找到修改点，应该能快速做出更
+改，而不易引入其他错误，这样的代码也能最大限度地提升我们的生产力，支持我们更快、更低成本地为用户添加新特性
+
+**## 参考**
+
+[^1]: 重构改善既有代码的设计第2版(https://github.com/mlx92/read-refactor/blob/main/%E9%87%8D%E6%9E%84%E6%94%B9%E5%96%84%E6%97%A2%E6%9C%89%E4%BB%A3%E7%A0%81%E7%9A%84%E8%AE%BE%E8%AE%A1%E7%AC%AC2%E7%89%88.pdf)
 
