@@ -16,22 +16,22 @@
   <meta name="author" content="孟玲旭">
   <meta name="keywords" content="">
   
-    <meta name="description" content="阅读一下重构的书籍 懂的什么是好代码 才能写出好代码">
+    <meta name="description" content="懂的什么是好代码 才能写出好代码">
 <meta property="og:type" content="article">
-<meta property="og:title" content="读重构 - 重构的原则">
-<meta property="og:url" content="http://menglingxu.top/2023/09/16/refactoring2/index.html">
+<meta property="og:title" content="重构">
+<meta property="og:url" content="http://menglingxu.top/2023/09/23/refactoring/index.html">
 <meta property="og:site_name" content="mlx&#39;blog">
-<meta property="og:description" content="阅读一下重构的书籍 懂的什么是好代码 才能写出好代码">
+<meta property="og:description" content="懂的什么是好代码 才能写出好代码">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-09-15T16:40:00.000Z">
-<meta property="article:modified_time" content="2023-09-15T17:25:14.877Z">
+<meta property="article:published_time" content="2023-09-23T15:33:00.000Z">
+<meta property="article:modified_time" content="2023-09-23T17:11:26.902Z">
 <meta property="article:author" content="孟玲旭">
 <meta property="article:tag" content="重构">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>读重构 - 重构的原则 - mlx&#39;blog</title>
+  <title>重构 - mlx&#39;blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -209,7 +209,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="读重构 - 重构的原则"></span>
+            <span id="subtitle" data-typed-text="重构"></span>
           
         </div>
 
@@ -220,8 +220,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-09-16 00:40" pubdate>
-          2023年9月16日 凌晨
+        <time datetime="2023-09-23 23:33" pubdate>
+          2023年9月23日 晚上
         </time>
       </span>
     
@@ -232,7 +232,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.8k 字
+          1.3k 字
         
       </span>
     
@@ -243,7 +243,7 @@
         
         
         
-          16 分钟
+          12 分钟
         
       </span>
     
@@ -280,32 +280,89 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">读重构 - 重构的原则</h1>
+            <h1 id="seo-header">重构</h1>
             
             
               <div class="markdown-body">
                 
-                <p>重构与性能优化有很多相似之处:两者都需要修改代码，并且两者都不会改 变程序的整体功能。<br>两者的差别在于其目的:<br>重构是为了让代码“更容易理解，更易于修改”。这可能使程序运行得更快，也可能使程序运行得更慢。<br>在性能优化时，我只关心让程序运行得更快，最终得到的代码有可能更难理解和维护。</p>
-<h2 id="1-何时重构"><a href="#1-何时重构" class="headerlink" title="1. 何时重构"></a>1. 何时重构</h2><h3 id="1-1-三次法则"><a href="#1-1-三次法则" class="headerlink" title="1.1 三次法则"></a>1.1 三次法则</h3><p>“第一次做某件事时只管去做；第二次做类似的事会产生反感，但无论如何还是可以去做；第三次再做类似的事，你就应该重构。”</p>
-<p>“正如老话说的：事不过三，三则重构。”</p>
-<h3 id="1-2-预备性重构"><a href="#1-2-预备性重构" class="headerlink" title="1.2 预备性重构"></a>1.2 预备性重构</h3><p>“让添加新功能更容易”</p>
-<p>“重构的最佳时机就在添加新功能之前。在动手添加新功能之前，我会看看现有的代码库，此时经常会发现：如果对代码结构做一点微调，我的工作会容易得多。”</p>
-<blockquote>
-<p>“这就好像我要往东去100公里。我不会往东一头把车开进树林，而是先往北开20公里上高速，然后再向东开100公里。后者的速度比前者要快上3倍。如果有人催着你“赶快直接去那儿”，有时你需要说：“等等，我要先看看地图，找出最快的路径。”这就是预备性重构于我的意义。<br>——Jessica Kerr”</p>
-</blockquote>
-<p>“修复bug时的情况也是一样。在寻找问题根因时，我可能会发现：如果把3段一模一样且都会导致错误的代码合并到一处，问题修复起来会容易得多。或者，如果把某些更新数据的逻辑与查询逻辑分开，会更容易避免造成错误的逻辑纠缠。用重构改善这些情况，在同样场合再次出现同样bug的概率也会降低。”</p>
-<h3 id="1-3-帮助理解的重构"><a href="#1-3-帮助理解的重构" class="headerlink" title="1.3 帮助理解的重构"></a>1.3 帮助理解的重构</h3><p>我需要先理解代码在做什么，然后才能着手修改。这段代码可能是我写的，也可能是别人写的。一旦我需要思考“这段代码到底在做什么”，我就会自问：能不能重构这段代码，令其一目了然？我可能看见了一段结构糟糕的条件逻辑，也可能希望复用一个函数，但花费了几分钟才弄懂它到底在做什么，因为它的函数命名实在是太糟糕了。这些都是重构的机会。</p>
-<h3 id="1-4-捡垃圾式重构"><a href="#1-4-捡垃圾式重构" class="headerlink" title="1.4 捡垃圾式重构"></a>1.4 捡垃圾式重构</h3><p>帮助理解的重构还有一个变体：我已经理解代码在做什么，但发现它做得不好，例如逻辑不必要地迂回复杂，或者两个函数几乎完全相同，可以用一个参数化的函数取而代之。这里有一个取舍：我不想从眼下正要完成的任务上跑题太多，但我也不想把垃圾留在原地，给将来的修改增加麻烦。如果我发现的垃圾很容易重构，我会马上重构它；如果重构需要花一些精力，我可能会拿一张便笺纸把它记下来，完成当下的任务再回来重构它。</p>
-<h3 id="1-5-有计划的重构和见机行事的重构"><a href="#1-5-有计划的重构和见机行事的重构" class="headerlink" title="1.5 有计划的重构和见机行事的重构"></a>1.5 有计划的重构和见机行事的重构</h3><p>有时，即便团队做了日常的重构，还是会有问题在某个区域逐渐累积长大，最终需要专门花些时间来解决。但这种有计划的重构应该很少，大部分重构应该是不起眼的、见机行事的。</p>
-<p>分离重构提交并不是毋庸置疑的原则，只有当你真的感到有益时，才值得这样做。</p>
-<h2 id="2-何时不应该重构"><a href="#2-何时不应该重构" class="headerlink" title="2.何时不应该重构"></a>2.何时不应该重构</h2><p>如果我看见一块凌乱的代码，但并不需要修改它，那么我就不需要重构它。如果丑陋的代码能被隐藏在一个API之下，我就可以容忍它继续保持丑陋。只有当我需要理解其工作原理时，对其进行重构才有价值。</p>
-<p>另一种情况是，如果重写比重构还容易，就别重构了。这是个困难的决定。如果不花一点儿时间尝试，往往很难真实了解重构一块代码的难度。决定到底应该重构还是重写，需要良好的判断力与丰富的经验，我无法给出一条简单的建议。</p>
-<h2 id="3-重构的挑战"><a href="#3-重构的挑战" class="headerlink" title="3. 重构的挑战"></a>3. 重构的挑战</h2><p>“重构的唯一目的就是让我们开发更快，用更少的工作量创造更大的价值。”</p>
-<p>尽管重构的目的是加快开发速度，但是，仍旧很多人认为，花在重构的时间是在拖慢新功能的开发进度。“重构会拖慢进度”这种看法仍然很普遍，这可能是导致人们没有充分重构的最大阻力所在。</p>
-<p>我们之所以重构，因为它能让我们更快——添加功能更快，修复bug更快。一定要随时记住这一点，与别人交流时也要不断强调这一点。重构应该总是由经济利益驱动。程序员、经理和客户越理解这一点，“好的设计”那条曲线就会越经常出现。</p>
-<h2 id="4-测试"><a href="#4-测试" class="headerlink" title="4. 测试"></a>4. 测试</h2><p>不会改变程序可观察的行为，这是重构的一个重要特征。如果仔细遵循重构手法的每个步骤，我应该不会破坏任何东西，但万一我犯了个错误怎么办？（呃，就我这个粗心大意的性格来说，请去掉“万一”两字。）人总会有出错的时候，不过只要及时发现，就不会造成大问题。既然每个重构都是很小的修改，即便真的造成了破坏，我也只需要检查最后一步的小修改——就算找不到出错的原因，只要回滚到版本控制中最后一个可用的版本就行了。</p>
-<h2 id="5-遗留代码"><a href="#5-遗留代码" class="headerlink" title="5. 遗留代码"></a>5. 遗留代码</h2><p>尽管作者给出了答案  “每次触碰一块代码时，我会尝试把它变好一点点——至少要让营地比我到达时更干净。”</p>
-<p>我看来依旧是无解</p>
+                <p>五星上将麦克阿瑟曾经说过：</p>
+<p>“写这段代码的时候只有我和上帝知道它是干嘛的，现在只有上帝’”</p>
+<p>相信大部分猿人们都被来自远古的代码气到喷血，为了让自己心情舒畅，咱们自己写的代码要上一些规范，远古的代码要进行适当重构。</p>
+<p>我们的目标：</p>
+<ul>
+<li>高的代码质量</li>
+<li>代码的可读性</li>
+<li>可维护性和性能</li>
+</ul>
+<p>个人喜欢的原文精句：</p>
+<ol>
+<li>傻瓜都能写出计算机可以理解的代码。唯有能写出人类容易理解的代码的，才是优秀的程序员。</li>
+<li>重构前，先检查自己是否有一套可靠的测试集。这些测试必须有自我检验能力。</li>
+<li>重构技术就是以微小的步伐修改程序。如果你犯下错误，很容易便可 发现它。</li>
+<li>谈原理，很容易流于泛泛，又很难说明如何实际应用。给出一个示例，就可以帮助我把事情认识清楚。</li>
+<li>大多数情况可以这么做：如果重构引入了性能损耗，先完成重构，再做性能优化</li>
+<li>每当感觉需要以注释来说明点什么的时候，我们就把需要说明的东西写进一个独立函数中，并以其用途（而非实现手法）命名。我们可以对一组甚至短短一行代码做这件事。哪怕替换后的函数调用动作比函数自身还长，只要函数名称能够解释其用途，我们也该毫不犹豫地那么做。关键不在于函数的长度，而在于函数“做什么”和“如何做”之间的语义距离。</li>
+</ol>
+<h1 id="重构的定义"><a href="#重构的定义" class="headerlink" title="重构的定义"></a>重构的定义</h1><p>改进现有代码的质量、可读性、可维护性和性能，而不改变其外部行为。</p>
+<h1 id="何时应该重构"><a href="#何时应该重构" class="headerlink" title="何时应该重构"></a>何时应该重构</h1><ol>
+<li><strong>代码复审（Code Review）</strong>：<ul>
+<li>代码复审是一个重要的重构时机。当其他开发人员审查代码时，他们可能会提出改进建议，例如提取方法、重命名变量等。</li>
+</ul>
+</li>
+<li><strong>新功能添加或缺陷修复</strong>：<ul>
+<li>在添加新功能或修复缺陷之前，可以考虑重构现有代码以确保代码的质量和可维护性。这可以防止将新问题引入代码中。</li>
+</ul>
+</li>
+<li><strong>代码维护</strong>：<ul>
+<li>定期进行代码维护是一个理想的重构时机。随着时间的推移，代码可能会变得复杂、难以理解和难以修改，因此定期的重构可以确保代码保持健康状态。</li>
+</ul>
+</li>
+<li><strong>性能优化</strong>：<ul>
+<li>当应用程序性能不符合要求时，可以进行性能优化的重构。这可能包括改进算法、减少资源消耗或优化数据库查询等。</li>
+</ul>
+</li>
+<li><strong>技术升级</strong>：<ul>
+<li>当您决定升级项目中使用的技术栈或库时，可能需要进行一些重构以适应新的技术。</li>
+</ul>
+</li>
+<li><strong>变更需求</strong>：<ul>
+<li>当项目的需求发生重大变化时，可能需要对现有代码进行调整和重构，以适应新需求。</li>
+</ul>
+</li>
+<li><strong>测试驱动开发（TDD）</strong>：<ul>
+<li>在采用TDD的开发方法时，重构是整个开发过程的一部分。在编写测试用例和生产代码之间，可以进行迭代的重构来改进设计。</li>
+</ul>
+</li>
+<li><strong>团队讨论和反馈</strong>：<ul>
+<li>在团队会议或讨论中，可能会提出关于代码质量和设计的问题，这些问题可以触发重构的行动计划。</li>
+</ul>
+</li>
+<li><strong>代码坏味道（Code Smells）</strong>：<ul>
+<li>代码坏味道是指代码中的一些常见问题，如长方法、重复代码、过于复杂的条件等。当发现这些问题时，可以考虑重构来去除坏味道。</li>
+</ul>
+</li>
+<li><strong>新技术的采用</strong>：<ul>
+<li>当新技术或编程语言出现并具有优势时，考虑重构以利用新技术的优势。</li>
+</ul>
+</li>
+</ol>
+<h1 id="何时不应该重构"><a href="#何时不应该重构" class="headerlink" title="何时不应该重构"></a>何时不应该重构</h1><ol>
+<li>不需要修改的代码</li>
+<li>隐藏在一个API之下，只有当我需要理解其工作原理时，对其进行重构才有价值</li>
+<li>重写比重构还容易</li>
+</ol>
+<h1 id="如何判断此处该重构-代码的坏味道"><a href="#如何判断此处该重构-代码的坏味道" class="headerlink" title="如何判断此处该重构&#x2F;代码的坏味道"></a>如何判断此处该重构&#x2F;代码的坏味道</h1><ol>
+<li><strong>神秘命名</strong><ul>
+<li>识别标志：变量、方法或类命名不具有描述性，难以理解。（type1 type2 随意的abc 汉语拼音  莫名其妙的缩写）</li>
+<li>解决方法：改变函数声明、变量改名、字段改名（命名用词要精准，不要缩写）</li>
+</ul>
+</li>
+<li><strong>重复代码</strong><ul>
+<li>识别标志：两段相似的代码</li>
+<li>解决方法：提炼函数、移动语句、函数上移等手法</li>
+</ul>
+</li>
+</ol>
 
                 
               </div>
@@ -351,8 +408,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>读重构 - 重构的原则</div>
-      <div>http://menglingxu.top/2023/09/16/refactoring2/</div>
+      <div>重构</div>
+      <div>http://menglingxu.top/2023/09/23/refactoring/</div>
     </div>
     <div class="license-meta">
       
@@ -364,7 +421,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年9月16日</div>
+          <div>2023年9月23日</div>
         </div>
       
       
@@ -396,12 +453,18 @@
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/2023/09/24/refactoring-extract-function/" title="重构-提炼函数">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">重构-提炼函数</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/09/13/refactoring1/" title="读重构 - 第一个示例">
-                        <span class="hidden-mobile">读重构 - 第一个示例</span>
+                      <a href="/2023/09/15/test/" title="">
+                        <span class="hidden-mobile"></span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

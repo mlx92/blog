@@ -18,20 +18,20 @@
   
     <meta name="description" content="阅读一下重构的书籍 懂的什么是好代码 才能写出好代码">
 <meta property="og:type" content="article">
-<meta property="og:title" content="读重构 - 第一个示例">
-<meta property="og:url" content="http://menglingxu.top/2023/09/13/refactoring1/index.html">
+<meta property="og:title" content="重构 - 第一个示例">
+<meta property="og:url" content="http://menglingxu.top/2023/09/13/refactoring-demo/index.html">
 <meta property="og:site_name" content="mlx&#39;blog">
 <meta property="og:description" content="阅读一下重构的书籍 懂的什么是好代码 才能写出好代码">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-09-13T11:03:00.000Z">
-<meta property="article:modified_time" content="2023-09-15T16:39:51.839Z">
+<meta property="article:modified_time" content="2023-09-23T17:09:34.237Z">
 <meta property="article:author" content="孟玲旭">
 <meta property="article:tag" content="重构">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>读重构 - 第一个示例 - mlx&#39;blog</title>
+  <title>重构 - 第一个示例 - mlx&#39;blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -209,7 +209,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="读重构 - 第一个示例"></span>
+            <span id="subtitle" data-typed-text="重构 - 第一个示例"></span>
           
         </div>
 
@@ -232,7 +232,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          21k 字
+          20k 字
         
       </span>
     
@@ -243,7 +243,7 @@
         
         
         
-          174 分钟
+          169 分钟
         
       </span>
     
@@ -280,17 +280,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">读重构 - 第一个示例</h1>
+            <h1 id="seo-header">重构 - 第一个示例</h1>
             
             
               <div class="markdown-body">
                 
-                <blockquote>
-<p>谈原理，很容易流于泛泛，又很难说明如何实际应用。给出一个示例，就可以帮助我把事情认识清楚。</p>
-</blockquote>
-<p>作者一下就点出了只看原理的困境，读很多原理的文章时，当时有一种我懂了的感觉，但是又想不出它应该用在哪里, 实际遇到相似原理的时候又有一种之前只是略懂的感觉。</p>
-<p>先给例子 在讲原理 加上一些拓展 可能认知会更清晰。</p>
-<h2 id="1-起点"><a href="#1-起点" class="headerlink" title="1 起点"></a>1 起点</h2><p>例子：</p>
+                <h2 id="1-起点"><a href="#1-起点" class="headerlink" title="1.起点"></a>1.起点</h2><p>例子：</p>
 <p>设想有一个戏剧演出团，演员们经常要去各种场合表演戏剧。通常客户 (customer)会指定几出剧目，而剧团则根据观众(audience)人数及剧目类型来向客户收费。该团目前出演两种戏剧: 悲剧(tragedy)和喜剧(comedy)。给客 户发出账单时，剧团还会根据到场观众的数量给出“观众量积分”(volume credit)优惠，下次客户再请剧团表演时可以使用积分获得折扣——你可以把它看 作一种提升客户忠诚度的方式。</p>
 <p>plays.json 该剧团将剧目的数据存储在一个简单的JSON文件中。</p>
 <div class="code-wrapper"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span>
@@ -366,22 +361,12 @@
 Amount owed is $<span class="hljs-number">1</span><span class="hljs-punctuation">,</span><span class="hljs-number">730.00</span>
 You earned <span class="hljs-number">47</span> credits</code></pre></div>
 
-<p>评价:</p>
-<p>代码组织不甚清晰!  </p>
-<p>可拓展性不高！</p>
-<h2 id="2-重构第一步-测试驱动开发"><a href="#2-重构第一步-测试驱动开发" class="headerlink" title="2 重构第一步 - 测试驱动开发"></a>2 重构第一步 - 测试驱动开发</h2><blockquote>
-<p>重构前，先检查自己是否有一套可靠的测试集。这些测试必须有自我检验能力。</p>
-</blockquote>
-<p><strong>进行重构时，需要依赖测试</strong>。<br>测试可以看做 bug 检测器，它们能保护不被自己犯的错误所困扰。<br>把想要达成的目标写两遍——代码里写一遍，测试里 再写一遍、这样犯两遍同样的错误才能骗过检测器。<br>这大大降低了错误率，因为对工作进行了二次确认。尽管编写测试需要花费时间，但却为节省下可观的调试时间。</p>
-<h2 id="3-分解-statement-函数"><a href="#3-分解-statement-函数" class="headerlink" title="3 分解 statement 函数"></a>3 分解 statement 函数</h2><blockquote>
-<p>傻瓜都能写出计算机可以理解的代码。唯有能写出人类容易理解的代码的，才是优秀的程序员。</p>
-</blockquote>
-<p>首先要明确的是一段好的代码，<strong>一眼望过去我就该知道它在做什么</strong>，回头看时，<strong>我不需要重新思考一遍</strong>。</p>
-<h3 id="3-1-抽离函数"><a href="#3-1-抽离函数" class="headerlink" title="3.1 抽离函数"></a>3.1 抽离函数</h3><p>最让人难懂的逻辑就是 switch 中计算金额的逻辑。要将他抽离出去，</p>
+<h2 id="2-重构第一步-测试驱动开发"><a href="#2-重构第一步-测试驱动开发" class="headerlink" title="2.重构第一步 - 测试驱动开发"></a>2.重构第一步 - 测试驱动开发</h2><p>编写测试用例</p>
+<h2 id="3-分解-statement-函数"><a href="#3-分解-statement-函数" class="headerlink" title="3.分解 statement 函数"></a>3.分解 statement 函数</h2><h3 id="3-1-抽离函数"><a href="#3-1-抽离函数" class="headerlink" title="3.1 抽离函数"></a>3.1 抽离函数</h3><p>最让人难懂的逻辑就是 switch 中计算金额的逻辑。要将他抽离出去，</p>
 <p>如何抽离呢？</p>
 <p>先将这块代码抽取成一个独立的函数，按它所干的事情给它命名，比如叫 amountFor(performance)，</p>
 <p>如何将这块代码提炼到自己的一个函数里？</p>
-<p><strong>首先要判断有哪些变量会离开原本的作用域</strong>，在此示例中，是 perf、play 和 thisAmount 这3个变量。前两个变量会被提炼后的函数使用，但不会被修改，那么我就可以将它们以参数方式传递进来。<br><strong>要更关心那些会被修改的变量</strong>。这里只有唯一一个 ——thisAmount，<u>因此可以将它从函数中直接返回，我还可以将其初始化放到提炼后的函数里</u>。<br>修改后的代码如下所示。</p>
+<p><strong>首先要判断有哪些变量会离开原本的作用域</strong>，在此示例中，是 perf、play 和 thisAmount 这3个变量。前两个变量会被提炼后的函数使用，但不会被修改，那么我就可以将它们以参数方式传递进来。<br><strong>要更关心那些会被修改的变量</strong>。这里只有唯一一个 ——thisAmount，因此可以将它从函数中直接返回，我还可以将其初始化放到提炼后的函数里。<br>修改后的代码如下所示。</p>
 <div class="code-wrapper"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">statement</span> (invoice, plays) &#123;
     <span class="hljs-keyword">let</span> totalAmount = <span class="hljs-number">0</span>;
     <span class="hljs-keyword">let</span> volumeCredits = <span class="hljs-number">0</span>;
@@ -428,12 +413,7 @@ You earned <span class="hljs-number">47</span> credits</code></pre></div>
   <span class="hljs-keyword">return</span> thisAmount;
 &#125;</code></pre></div>
 
-<p>改写之后要立马进行测试一遍，以确定我们的修改有效而不会带来其他不可预见的问题。如果重构时思如泉涌，写到最后进行测试，可能中间某一个步骤出现了问题就需要把重构的每一步都进行检测，难以查找，有时还会出现重构方向产生偏差，需要对中间以及偏后的代码重新编写。</p>
-<p>重构过程的精髓所在:<strong>小步修改，每次修改后就运行测试</strong>。如果我 改动了太多东西，犯错时就可能陷入麻烦的调试，并为此耗费大把时间。小步修改，以及它带来的频繁反馈，正是防止混乱的关键。</p>
-<blockquote>
-<p>重构技术就是以微小的步伐修改程序。如果你犯下错误，很容易便可 发现它。</p>
-</blockquote>
-<p>测试通过后，我会将代码推送到 git 上，以便接下来的修改不会影响上一段的代码，下一段重构做的不好以及思绪混乱时，直接切回上次提交极为有用。</p>
+<p>改写之后要立马进行测试一遍，以确定我们的修改有效而不会带来其他不可预见的问题。测试通过后，我会将代码推送到 git 上，以便接下来的修改不会影响上一段的代码，下一段重构做的不好以及思绪混乱时，直接切回上次提交极为有用。</p>
 <h3 id="3-2-修改变量名"><a href="#3-2-修改变量名" class="headerlink" title="3.2 修改变量名"></a>3.2 修改变量名</h3><blockquote>
 <p>好代码应能清楚地表明它在做什么，而变量命名是代码清晰的关键</p>
 </blockquote>
@@ -981,8 +961,8 @@ result += <span class="hljs-string">`You earned <span class="hljs-subst">$&#123;
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>读重构 - 第一个示例</div>
-      <div>http://menglingxu.top/2023/09/13/refactoring1/</div>
+      <div>重构 - 第一个示例</div>
+      <div>http://menglingxu.top/2023/09/13/refactoring-demo/</div>
     </div>
     <div class="license-meta">
       
@@ -1026,9 +1006,9 @@ result += <span class="hljs-string">`You earned <span class="hljs-subst">$&#123;
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/09/16/refactoring2/" title="读重构 - 重构的原则">
+                      <a href="/2023/09/15/test/" title="">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">读重构 - 重构的原则</span>
+                        <span class="hidden-mobile"></span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
