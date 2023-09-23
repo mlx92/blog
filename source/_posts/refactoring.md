@@ -96,3 +96,10 @@ comment: true
 - 识别标志：两段相似的代码
 - 解决方法：[提炼函数](http://menglingxu.top/2023/09/24/refactoring-extract-function/)、移动语句、函数上移等手法
 
+------
+
+感谢 [s33h0w](https://juejin.cn/user/2999123450011288/posts) 的思维脑图
+
+- [代码的坏味道](https://www.processon.com/view/link/5dca64dae4b0fc314a0dfaad)
+- [重构手法](https://www.processon.com/view/link/5dca6542e4b059bcd19116be)
+
