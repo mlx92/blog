@@ -24,7 +24,7 @@
 <meta property="og:description" content="懂的什么是好代码 才能写出好代码">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-09-23T15:33:00.000Z">
-<meta property="article:modified_time" content="2023-09-23T17:11:26.902Z">
+<meta property="article:modified_time" content="2023-09-23T18:38:52.677Z">
 <meta property="article:author" content="孟玲旭">
 <meta property="article:tag" content="重构">
 <meta name="twitter:card" content="summary_large_image">
@@ -232,7 +232,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.3k 字
+          1.4k 字
         
       </span>
     
@@ -304,65 +304,52 @@
 <li>每当感觉需要以注释来说明点什么的时候，我们就把需要说明的东西写进一个独立函数中，并以其用途（而非实现手法）命名。我们可以对一组甚至短短一行代码做这件事。哪怕替换后的函数调用动作比函数自身还长，只要函数名称能够解释其用途，我们也该毫不犹豫地那么做。关键不在于函数的长度，而在于函数“做什么”和“如何做”之间的语义距离。</li>
 </ol>
 <h1 id="重构的定义"><a href="#重构的定义" class="headerlink" title="重构的定义"></a>重构的定义</h1><p>改进现有代码的质量、可读性、可维护性和性能，而不改变其外部行为。</p>
-<h1 id="何时应该重构"><a href="#何时应该重构" class="headerlink" title="何时应该重构"></a>何时应该重构</h1><ol>
-<li><strong>代码复审（Code Review）</strong>：<ul>
+<h1 id="何时应该重构"><a href="#何时应该重构" class="headerlink" title="何时应该重构"></a>何时应该重构</h1><h2 id="1-代码复审（Code-Review"><a href="#1-代码复审（Code-Review" class="headerlink" title="1. 代码复审（Code Review)"></a>1. 代码复审（Code Review)</h2><ul>
 <li>代码复审是一个重要的重构时机。当其他开发人员审查代码时，他们可能会提出改进建议，例如提取方法、重命名变量等。</li>
 </ul>
-</li>
-<li><strong>新功能添加或缺陷修复</strong>：<ul>
+<h2 id="2-新功能添加或缺陷修复"><a href="#2-新功能添加或缺陷修复" class="headerlink" title="2. 新功能添加或缺陷修复"></a>2. 新功能添加或缺陷修复</h2><ul>
 <li>在添加新功能或修复缺陷之前，可以考虑重构现有代码以确保代码的质量和可维护性。这可以防止将新问题引入代码中。</li>
 </ul>
-</li>
-<li><strong>代码维护</strong>：<ul>
+<h2 id="3-代码维护"><a href="#3-代码维护" class="headerlink" title="3. 代码维护"></a>3. 代码维护</h2><ul>
 <li>定期进行代码维护是一个理想的重构时机。随着时间的推移，代码可能会变得复杂、难以理解和难以修改，因此定期的重构可以确保代码保持健康状态。</li>
 </ul>
-</li>
-<li><strong>性能优化</strong>：<ul>
+<h2 id="3-性能优化"><a href="#3-性能优化" class="headerlink" title="3. 性能优化"></a>3. 性能优化</h2><ul>
 <li>当应用程序性能不符合要求时，可以进行性能优化的重构。这可能包括改进算法、减少资源消耗或优化数据库查询等。</li>
 </ul>
-</li>
-<li><strong>技术升级</strong>：<ul>
+<h2 id="4-技术升级"><a href="#4-技术升级" class="headerlink" title="4. 技术升级"></a>4. 技术升级</h2><ul>
 <li>当您决定升级项目中使用的技术栈或库时，可能需要进行一些重构以适应新的技术。</li>
 </ul>
-</li>
-<li><strong>变更需求</strong>：<ul>
+<h2 id="5-变更需求"><a href="#5-变更需求" class="headerlink" title="5. 变更需求"></a>5. 变更需求</h2><ul>
 <li>当项目的需求发生重大变化时，可能需要对现有代码进行调整和重构，以适应新需求。</li>
 </ul>
-</li>
-<li><strong>测试驱动开发（TDD）</strong>：<ul>
+<h2 id="6-测试驱动开发（TDD）"><a href="#6-测试驱动开发（TDD）" class="headerlink" title="6. 测试驱动开发（TDD）"></a>6. 测试驱动开发（TDD）</h2><ul>
 <li>在采用TDD的开发方法时，重构是整个开发过程的一部分。在编写测试用例和生产代码之间，可以进行迭代的重构来改进设计。</li>
 </ul>
-</li>
-<li><strong>团队讨论和反馈</strong>：<ul>
+<h2 id="7-团队讨论和反馈"><a href="#7-团队讨论和反馈" class="headerlink" title="7. 团队讨论和反馈"></a>7. 团队讨论和反馈</h2><ul>
 <li>在团队会议或讨论中，可能会提出关于代码质量和设计的问题，这些问题可以触发重构的行动计划。</li>
 </ul>
-</li>
-<li><strong>代码坏味道（Code Smells）</strong>：<ul>
+<h2 id="8-代码坏味道（Code-Smells）"><a href="#8-代码坏味道（Code-Smells）" class="headerlink" title="8. 代码坏味道（Code Smells）"></a>8. 代码坏味道（Code Smells）</h2><ul>
 <li>代码坏味道是指代码中的一些常见问题，如长方法、重复代码、过于复杂的条件等。当发现这些问题时，可以考虑重构来去除坏味道。</li>
 </ul>
-</li>
-<li><strong>新技术的采用</strong>：<ul>
+<h2 id="9-新技术的采用"><a href="#9-新技术的采用" class="headerlink" title="9. 新技术的采用"></a>9. 新技术的采用</h2><ul>
 <li>当新技术或编程语言出现并具有优势时，考虑重构以利用新技术的优势。</li>
 </ul>
+<h1 id="何时不应该重构"><a href="#何时不应该重构" class="headerlink" title="何时不应该重构"></a>何时不应该重构</h1><h2 id="1-不需要修改的代码"><a href="#1-不需要修改的代码" class="headerlink" title="1.不需要修改的代码"></a>1.不需要修改的代码</h2><h2 id="2-隐藏在一个API之下，只有当我需要理解其工作原理时，对其进行重构才有价值"><a href="#2-隐藏在一个API之下，只有当我需要理解其工作原理时，对其进行重构才有价值" class="headerlink" title="2. 隐藏在一个API之下，只有当我需要理解其工作原理时，对其进行重构才有价值"></a>2. 隐藏在一个API之下，只有当我需要理解其工作原理时，对其进行重构才有价值</h2><h2 id="3-重写比重构还容易"><a href="#3-重写比重构还容易" class="headerlink" title="3. 重写比重构还容易"></a>3. 重写比重构还容易</h2><h1 id="如何判断此处该重构-代码的坏味道"><a href="#如何判断此处该重构-代码的坏味道" class="headerlink" title="如何判断此处该重构&#x2F;代码的坏味道"></a>如何判断此处该重构&#x2F;代码的坏味道</h1><h2 id="1-神秘命名"><a href="#1-神秘命名" class="headerlink" title="1. 神秘命名"></a>1. 神秘命名</h2><ul>
+<li><p>识别标志：变量、方法或类命名不具有描述性，难以理解。（type1 type2 随意的abc 汉语拼音  莫名其妙的缩写）</p>
 </li>
-</ol>
-<h1 id="何时不应该重构"><a href="#何时不应该重构" class="headerlink" title="何时不应该重构"></a>何时不应该重构</h1><ol>
-<li>不需要修改的代码</li>
-<li>隐藏在一个API之下，只有当我需要理解其工作原理时，对其进行重构才有价值</li>
-<li>重写比重构还容易</li>
-</ol>
-<h1 id="如何判断此处该重构-代码的坏味道"><a href="#如何判断此处该重构-代码的坏味道" class="headerlink" title="如何判断此处该重构&#x2F;代码的坏味道"></a>如何判断此处该重构&#x2F;代码的坏味道</h1><ol>
-<li><strong>神秘命名</strong><ul>
-<li>识别标志：变量、方法或类命名不具有描述性，难以理解。（type1 type2 随意的abc 汉语拼音  莫名其妙的缩写）</li>
-<li>解决方法：改变函数声明、变量改名、字段改名（命名用词要精准，不要缩写）</li>
+<li><p>解决方法：改变函数声明、变量改名、字段改名（命名用词要精准，不要缩写）</p>
+</li>
 </ul>
-</li>
-<li><strong>重复代码</strong><ul>
+<h2 id="2-重复代码"><a href="#2-重复代码" class="headerlink" title="2. 重复代码"></a>2. 重复代码</h2><ul>
 <li>识别标志：两段相似的代码</li>
-<li>解决方法：提炼函数、移动语句、函数上移等手法</li>
+<li>解决方法：<a href="http://menglingxu.top/2023/09/24/refactoring-extract-function/">提炼函数</a>、移动语句、函数上移等手法</li>
 </ul>
-</li>
-</ol>
+<hr>
+<p>感谢 <a target="_blank" rel="noopener" href="https://juejin.cn/user/2999123450011288/posts">s33h0w</a> 的思维脑图</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.processon.com/view/link/5dca64dae4b0fc314a0dfaad">代码的坏味道</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.processon.com/view/link/5dca6542e4b059bcd19116be">重构手法</a></li>
+</ul>
 
                 
               </div>
@@ -383,6 +370,13 @@
         
   <a href="/categories/%E9%87%8D%E6%9E%84/" class="category-chain-item">重构</a>
   
+  
+    <span>></span>
+    
+  <a href="/categories/%E9%87%8D%E6%9E%84/%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" class="category-chain-item">基本操作</a>
+  
+  
+
   
 
       </span>
@@ -463,8 +457,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/09/15/test/" title="">
-                        <span class="hidden-mobile"></span>
+                      <a href="/2023/09/23/refactoring-slide-statment/" title="移动语句">
+                        <span class="hidden-mobile">移动语句</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
