@@ -6,8 +6,12 @@
 - type: twitter
   icon: "fa-brands fa-x-twitter"
 
-- type: email
+# The theme renders `type: email` as a `javascript:void(...)` href, which some
+# in-app browsers (e.g. WeChat) refuse to execute. Use a plain mailto: URL
+# via a custom type instead.
+- type: mail
   icon: "fas fa-envelope"
+  url: "mailto:778683342@qq.com"
   noblank: true # open link in current tab
 
 # Uncomment and complete the url below to enable more contact options
