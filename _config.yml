@@ -34,7 +34,7 @@ social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
   name: 孟玲旭
-  email: menglingxu@aihelp.net
+  email: 778683342@qq.com
   fediverse_handle: # fill in your fediverse handle. E.g. "@username@domain.com"
   links:
     # The first element serves as the copyright owner's link
@@ -215,6 +215,12 @@ compress_html:
     envs: [development]
 
 exclude:
+  - "AGENTS.md"
+  - "SOUL.md"
+  - "USER.md"
+  - "IDENTITY.md"
+  - "memory"
+  - ".openclaw"
   - "scaffolds"
   - "*.gem"
   - "*.gemspec"
