@@ -221,6 +221,7 @@ exclude:
   - "IDENTITY.md"
   - "memory"
   - ".openclaw"
+  - "openclaw-assets"
   - "scaffolds"
   - "*.gem"
   - "*.gemspec"
