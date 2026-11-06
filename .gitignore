@@ -41,3 +41,6 @@ USER.md
 
 # OpenClaw identity assets (local only, used by agent identity)
 openclaw-assets/
+
+# Agent skills (local only, not part of the published site)
+skills/

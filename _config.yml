@@ -222,6 +222,8 @@ exclude:
   - "memory"
   - ".openclaw"
   - "openclaw-assets"
+  - "skills"
+  - "media"
   - "scaffolds"
   - "*.gem"
   - "*.gemspec"
