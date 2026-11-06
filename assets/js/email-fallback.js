@@ -9,8 +9,13 @@
 (function () {
   'use strict';
 
-  var UA = navigator.userAgent || '';
-  var isInApp = /MicroMessenger|QQ\/|Weibo|DingTalk|Alipay/i.test(UA);
+  var IN_APP_RE = /MicroMessenger|QQ\/|Weibo|DingTalk|Alipay/i;
+
+  // Evaluated at click time (not load time): some browsers mutate the UA
+  // after the document is parsed, and we want the most current value.
+  function isInApp() {
+    return IN_APP_RE.test(navigator.userAgent || '');
+  }
 
   function showToast(text) {
     var existing = document.getElementById('email-copy-toast');
@@ -78,7 +83,7 @@
     if (!address) return;
 
     // Only step in for in-app browsers; desktop keeps the native mail client.
-    if (!isInApp) return;
+    if (!isInApp()) return;
 
     // NOTE: we deliberately do NOT preventDefault here. If the in-app browser
     // can still hand the address to a mail client, that keeps working; we
