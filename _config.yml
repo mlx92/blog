@@ -224,6 +224,7 @@ exclude:
   - "openclaw-assets"
   - "skills"
   - "media"
+  - "DREAMS.md"
   - "scaffolds"
   - "*.gem"
   - "*.gemspec"
